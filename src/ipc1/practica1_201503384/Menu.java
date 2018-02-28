@@ -20,10 +20,15 @@ public class Menu {
     Jugador[] jugador;
     Subidas[] subidas;
     Bajones[] bajones;
-    
+    Subidas colocar_subidas;
+
     private int cant_jugadores;
     private int cant_subidas;
     private int cant_bajones;
+
+    public Menu() {
+        colocar_subidas = new Subidas();
+    }
 
     public void mostrarMenuPrincipal() {
         int opcion;
@@ -51,6 +56,7 @@ public class Menu {
                     break;
                 case 3:
                     crearTablero(dificultad.getDificultad());
+                    crearSubidas(dificultad.getDificultad());
                     tablero.mostrarTablero();
                     mostrarMenuPrincipal();
                     break;
@@ -109,8 +115,9 @@ public class Menu {
                     generarTurno(jugador.length);
                     break;
                 case 2:
-                    crearSubidas(dificultad.getDificultad());
-                    crearBajones(dificultad.getDificultad());
+                    System.out.println("");
+                    pedirSubidas(dificultad.getDificultad());
+                    pedirBajones(dificultad.getDificultad());
                     mostrarMenuPrincipal();
                     break;
                 case 3:
@@ -203,43 +210,36 @@ public class Menu {
         mostrarMenuPrincipal();
     }
 
-    public void crearSubidas(String dificultad) {
+    public void pedirSubidas(String dificultad) {
         if (dificultad.equals("Facil")) {
             do {
-                System.out.print("\nIngrese la cantidad de subidas (5-10): ");
+                System.out.print("Ingrese la cantidad de subidas (5-10): ");
                 cant_subidas = teclado.nextInt();
             } while (cant_subidas < 5 || cant_subidas > 10);
         } else {
             do {
-                System.out.print("\nIngrese la cantidad de subidas (20-40): ");
+                System.out.print("Ingrese la cantidad de subidas (20-40): ");
                 cant_subidas = teclado.nextInt();
             } while (cant_subidas < 20 || cant_subidas > 40);
         }
+        subidas = new Subidas[cant_subidas];
+        System.out.println("");
     }
 
-    public void crearBajones(String dificultad) {
+    public void pedirBajones(String dificultad) {
         if (dificultad.equals("Facil")) {
             do {
-                System.out.print("\nIngrese la cantidad de bajones (5-10): ");
+                System.out.print("Ingrese la cantidad de bajones (5-10): ");
                 cant_bajones = teclado.nextInt();
             } while (cant_bajones < 5 || cant_bajones > 10);
         } else {
             do {
-                System.out.print("\nIngrese la cantidad de bajones (20-40): ");
+                System.out.print("Ingrese la cantidad de bajones (20-40): ");
                 cant_bajones = teclado.nextInt();
             } while (cant_bajones < 20 || cant_bajones > 40);
         }
-    }
-
-    public void posicionInicial() {
-        int i;
-        for (i = 0; i < cant_subidas; i++) {
-            subidas = new Subidas[cant_subidas];
-        }
-
-        for (i = 0; i < cant_bajones; i++) {
-            bajones = new Bajones[cant_bajones];
-        }
+        bajones = new Bajones[cant_bajones];
+        System.out.println("");
     }
 
     public void crearTablero(String dificultad) {
@@ -250,6 +250,64 @@ public class Menu {
         } else {
             tablero.setFilas(20);
             tablero.setColumnas(10);
+        }
+    }
+
+    public void analizarPosicionSubidaInicio(int random_ix, int random_iy, boolean posicion_correcta, int i) {
+        int j;
+        for (j = 0; j < i; j++) {
+            if (random_ix == subidas[j].getInicio_x() && random_iy == subidas[j].getInicio_y()) {
+                posicion_correcta = false;
+            } else if (random_ix == subidas[j].getInicio_x() - 1 && random_iy == subidas[j].getInicio_y()) {
+                posicion_correcta = false;
+            } else if (random_ix == subidas[j].getInicio_x() + 1 && random_iy == subidas[j].getInicio_y()) {
+                posicion_correcta = false;
+            }
+        }
+    }
+
+    public void analizarPosicionSubidaFinal(int random_fx, int random_fy, boolean posicion_correcta, int i) {
+
+    }
+
+    public void crearSubidas(String dificultad) {
+        int i, random_ix, random_iy, random_fx, random_fy;
+        boolean posicion_correcta;
+
+        if (dificultad.equals("Facil")) {
+            for (i = 0; i < subidas.length; i++) {
+                subidas[i] = new Subidas();
+                do {
+                    posicion_correcta = true;
+                    random_ix = (int) (Math.random() * 7);
+                    random_iy = (int) (Math.random() * 3);
+                    random_fx = (int) (Math.random() * 7);
+                    random_fy = (int) (Math.random() * 4 + 1);
+                    analizarPosicionSubidaInicio(random_ix, random_iy, posicion_correcta, i);
+                    //analizarPosicionSubidaFinal(random_fx, random_fy, posicion_correcta, i);
+                } while (!posicion_correcta);
+                subidas[i].setInicio_x(random_ix);
+                subidas[i].setInicio_y(random_iy);
+                subidas[i].setFinal_x(random_fx);
+                subidas[i].setFinal_y(random_fy);
+            }
+        } else {
+            for (i = 0; i < subidas.length; i++) {
+                subidas[i] = new Subidas();
+                do {
+                    posicion_correcta = true;
+                    random_ix = (int) (Math.random() * 19);
+                    random_iy = (int) (Math.random() * 8);
+                    random_fx = (int) (Math.random() * 19);
+                    random_fy = (int) (Math.random() * 9 + 1);
+                    analizarPosicionSubidaInicio(random_ix, random_iy, posicion_correcta, i);
+                    analizarPosicionSubidaFinal(random_fx, random_fy, posicion_correcta, i);
+                } while (!posicion_correcta);
+                subidas[i].setInicio_x(random_ix);
+                subidas[i].setInicio_y(random_iy);
+                subidas[i].setFinal_x(random_fx);
+                subidas[i].setFinal_y(random_fy);
+            }
         }
     }
 }
