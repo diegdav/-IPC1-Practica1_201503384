@@ -4,11 +4,13 @@
  * and open the template in the editor.
  */
 package ipc1.practica1_201503384;
+
 /**
  *
  * @author diego
  */
 public class Jugador {
+
     private char simbolo;
     private int num_jugador;
 
@@ -38,5 +40,14 @@ public class Jugador {
      */
     public void setNum_jugador(int num_jugador) {
         this.num_jugador = num_jugador;
+    }
+
+    public void lanzarDado(String dificultad) {
+        int random;
+        if (dificultad.equals("Facil")) {
+            random = (int) (Math.random() * 6 + 1);
+        } else {
+            random = (int) (Math.random() * 12 + 1);
+        }
     }
 }
