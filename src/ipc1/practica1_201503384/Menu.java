@@ -16,10 +16,11 @@ public class Menu {
     Scanner teclado = new Scanner(System.in);
 
     Dificultad dificultad = new Dificultad();
+    Tablero tablero = new Tablero();
     Jugador[] jugador;
     Subidas[] subidas;
     Bajones[] bajones;
-
+    
     private int cant_jugadores;
     private int cant_subidas;
     private int cant_bajones;
@@ -49,6 +50,9 @@ public class Menu {
                     }
                     break;
                 case 3:
+                    crearTablero(dificultad.getDificultad());
+                    tablero.mostrarTablero();
+                    mostrarMenuPrincipal();
                     break;
                 case 4:
                     System.exit(0);
@@ -102,6 +106,7 @@ public class Menu {
             switch (opcion) {
                 case 1:
                     ingresarCantidadJugadores(dificultad.getDificultad());
+                    generarTurno(jugador.length);
                     break;
                 case 2:
                     crearSubidas(dificultad.getDificultad());
@@ -131,7 +136,7 @@ public class Menu {
             } while (cant_jugadores < 2 || cant_jugadores > 4);
         }
         jugador = new Jugador[cant_jugadores];
-        crearJugadores(cant_jugadores);
+        crearJugadores(jugador.length);
     }
 
     public void crearJugadores(int cant_jugadores) {
@@ -141,7 +146,7 @@ public class Menu {
                 jugador[i] = new Jugador();
             }
         }
-        asignarSimbolo(cant_jugadores);
+        asignarSimbolo(jugador.length);
     }
 
     public void asignarSimbolo(int cant_jugadores) {
@@ -164,6 +169,23 @@ public class Menu {
             jugador[i].setSimbolo(simbolo);
         }
         mostrarMenuParametros();
+    }
+
+    public void generarTurno(int cant_jugadores) {
+        int i, j, random;
+        boolean turno;
+        for (i = 0; i < cant_jugadores; i++) {
+            do {
+                turno = true;
+                random = (int) (Math.random() * cant_jugadores) + 1;
+                for (j = 0; j < i; j++) {
+                    if (random == jugador[j].getNum_jugador()) {
+                        turno = false;
+                    }
+                }
+            } while (!turno);
+            jugador[i].setNum_jugador(random);
+        }
     }
 
     public void mostrarRestricciones(String dificultad) {
@@ -217,6 +239,17 @@ public class Menu {
 
         for (i = 0; i < cant_bajones; i++) {
             bajones = new Bajones[cant_bajones];
-        } 
-   }
+        }
+    }
+
+    public void crearTablero(String dificultad) {
+        System.out.println("");
+        if (dificultad.equals("Facil")) {
+            tablero.setFilas(5);
+            tablero.setColumnas(8);
+        } else {
+            tablero.setFilas(20);
+            tablero.setColumnas(10);
+        }
+    }
 }
