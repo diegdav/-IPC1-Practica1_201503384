@@ -16,6 +16,6 @@ public class IPC1Practica1_201503384 {
      */
     public static void main(String[] args) {
         Menu menu = new Menu();
-        menu.menuPrincipal();
+        menu.mostrarMenuPrincipal();
     }
 }
