@@ -11,6 +11,11 @@ package ipc1.practica1_201503384;
  */
 public class Subidas {
 
+    private int inicio_x;
+    private int inicio_y;
+    private int final_x;
+    private int final_y;
+
     /**
      * @return the inicio_x
      */
@@ -66,8 +71,4 @@ public class Subidas {
     public void setFinal_y(int final_y) {
         this.final_y = final_y;
     }
-    private int inicio_x;
-    private int inicio_y;
-    private int final_x;
-    private int final_y;
 }
