@@ -20,14 +20,15 @@ public class Menu {
     Jugador[] jugador;
     Subidas[] subidas;
     Bajones[] bajones;
-    Subidas colocar_subidas;
 
     private int cant_jugadores;
     private int cant_subidas;
     private int cant_bajones;
+    private boolean posicion_correcta_inicio;
+    private boolean posicion_correcta_final;
+    private int random_ix, random_iy, random_fx, random_fy;
 
     public Menu() {
-        colocar_subidas = new Subidas();
     }
 
     public void mostrarMenuPrincipal() {
@@ -55,9 +56,9 @@ public class Menu {
                     }
                     break;
                 case 3:
-                    crearTablero(dificultad.getDificultad());
                     crearSubidas(dificultad.getDificultad());
-                    tablero.mostrarTablero();
+                    crearBajones(dificultad.getDificultad());
+                    tablero.crearTablero();
                     mostrarMenuPrincipal();
                     break;
                 case 4:
@@ -206,6 +207,10 @@ public class Menu {
             System.out.println("Subidas de 20 a 40");
             System.out.println("Bajones de 20 a 40");
         }
+
+        crearTablero(dificultad);
+        tablero.crearTamanio();
+
         System.out.println("");
         mostrarMenuPrincipal();
     }
@@ -253,60 +258,169 @@ public class Menu {
         }
     }
 
-    public void analizarPosicionSubidaInicio(int random_ix, int random_iy, boolean posicion_correcta, int i) {
+    public void analizarPosicionSubidaInicio(int random_ix, int random_iy, int i) {
         int j;
         for (j = 0; j < i; j++) {
             if (random_ix == subidas[j].getInicio_x() && random_iy == subidas[j].getInicio_y()) {
-                posicion_correcta = false;
+                posicion_correcta_inicio = false;
             } else if (random_ix == subidas[j].getInicio_x() - 1 && random_iy == subidas[j].getInicio_y()) {
-                posicion_correcta = false;
+                posicion_correcta_inicio = false;
             } else if (random_ix == subidas[j].getInicio_x() + 1 && random_iy == subidas[j].getInicio_y()) {
-                posicion_correcta = false;
+                posicion_correcta_inicio = false;
             }
         }
     }
 
-    public void analizarPosicionSubidaFinal(int random_fx, int random_fy, boolean posicion_correcta, int i) {
-
+    public void analizarPosicionSubidaFinal(int random_fx, int random_fy, int i) {
+        int j;
+        for (j = 0; j < i; j++) {
+            if (random_fx == subidas[j].getFinal_x() && random_fy == subidas[j].getFinal_y()) {
+                posicion_correcta_final = false;
+            } else if (random_fx == subidas[j].getFinal_x() - 1 && random_fy == subidas[j].getFinal_y()) {
+                posicion_correcta_final = false;
+            } else if (random_fx == subidas[j].getFinal_x() + 1 && random_fy == subidas[j].getFinal_y()) {
+                posicion_correcta_final = false;
+            }
+        }
     }
 
     public void crearSubidas(String dificultad) {
-        int i, random_ix, random_iy, random_fx, random_fy;
-        boolean posicion_correcta;
-
         if (dificultad.equals("Facil")) {
+            int i;
             for (i = 0; i < subidas.length; i++) {
                 subidas[i] = new Subidas();
                 do {
-                    posicion_correcta = true;
-                    random_ix = (int) (Math.random() * 7);
-                    random_iy = (int) (Math.random() * 3);
-                    random_fx = (int) (Math.random() * 7);
-                    random_fy = (int) (Math.random() * 4 + 1);
-                    analizarPosicionSubidaInicio(random_ix, random_iy, posicion_correcta, i);
-                    //analizarPosicionSubidaFinal(random_fx, random_fy, posicion_correcta, i);
-                } while (!posicion_correcta);
-                subidas[i].setInicio_x(random_ix);
-                subidas[i].setInicio_y(random_iy);
-                subidas[i].setFinal_x(random_fx);
-                subidas[i].setFinal_y(random_fy);
+                    posicion_correcta_inicio = true;
+                    this.random_ix = (int) (Math.random() * 7);
+                    this.random_iy = (int) (Math.random() * 3);
+                    analizarPosicionSubidaInicio(this.random_ix, this.random_iy, i);
+                } while (!posicion_correcta_inicio);
+                do {
+                    posicion_correcta_final = true;
+                    this.random_fx = (int) (Math.random() * 7);
+                    this.random_fy = (int) (Math.random() * 4 + 1);
+                    analizarPosicionSubidaFinal(this.random_fx, this.random_fy, i);
+                } while (!posicion_correcta_final);
+                subidas[i].setInicio_x(this.random_ix);
+                subidas[i].setInicio_y(this.random_iy);
+                subidas[i].setFinal_x(this.random_fx);
+                subidas[i].setFinal_y(this.random_fy);
+
+                tablero.agregarSubidas(subidas[i].getInicio_x(), subidas[i].getInicio_y(), subidas[i].getFinal_x(), subidas[i].getFinal_y());
             }
         } else {
+            int i;
             for (i = 0; i < subidas.length; i++) {
                 subidas[i] = new Subidas();
                 do {
-                    posicion_correcta = true;
+                    posicion_correcta_inicio = true;
+                    this.random_ix = (int) (Math.random() * 19);
+                    this.random_iy = (int) (Math.random() * 8);
+                    analizarPosicionSubidaInicio(this.random_ix, this.random_iy, i);
+                } while (!posicion_correcta_inicio);
+                do {
+                    posicion_correcta_final = true;
+                    this.random_fx = (int) (Math.random() * 19);
+                    this.random_fy = (int) (Math.random() * 9 + 1);
+                    analizarPosicionSubidaFinal(this.random_fx, this.random_fy, i);
+                } while (!posicion_correcta_final);
+                subidas[i].setInicio_x(this.random_ix);
+                subidas[i].setInicio_y(this.random_iy);
+                subidas[i].setFinal_x(this.random_fx);
+                subidas[i].setFinal_y(this.random_fy);
+
+                tablero.agregarSubidas(subidas[i].getInicio_x(), subidas[i].getInicio_y(), subidas[i].getFinal_x(), subidas[i].getFinal_y());
+            }
+        }
+    }
+
+    public void analizarPosicionBajonesInicio(int random_ix, int random_iy, int i) {
+        int j, k;
+        for (j = 0; j < i; j++) {
+            for (k = 0; k < subidas.length; k++) {
+                if (random_ix == bajones[j].getInicio_x() && random_iy == bajones[j].getInicio_y()) {
+                    posicion_correcta_inicio = false;
+                } else if (random_ix == bajones[j].getInicio_x() - 1 && random_iy == bajones[j].getInicio_y()) {
+                    posicion_correcta_inicio = false;
+                } else if (random_ix == bajones[j].getInicio_x() + 1 && random_iy == bajones[j].getInicio_y()) {
+                    posicion_correcta_inicio = false;
+                } else if (random_ix == subidas[k].getInicio_x() && random_iy == subidas[k].getInicio_y()) {
+                    posicion_correcta_inicio = false;
+                } else if (random_ix == subidas[k].getInicio_x() - 1 && random_iy == subidas[k].getInicio_y()) {
+                    posicion_correcta_inicio = false;
+                } else if (random_ix == subidas[k].getInicio_x() + 1 && random_iy == subidas[k].getInicio_y()) {
+                    posicion_correcta_inicio = false;
+                }
+            }
+        }
+    }
+
+    public void analizarPosicionBajonesFinal(int random_fx, int random_fy, int i) {
+        int j, k;
+        for (j = 0; j < i; j++) {
+            for (k = 0; k < subidas.length; k++) {
+                if (random_fx == bajones[j].getFinal_x() && random_fy == bajones[j].getFinal_y()) {
+                    posicion_correcta_final = false;
+                } else if (random_fx == bajones[j].getFinal_x() - 1 && random_fy == bajones[j].getFinal_y()) {
+                    posicion_correcta_final = false;
+                } else if (random_fx == bajones[j].getFinal_x() + 1 && random_fy == bajones[j].getFinal_y()) {
+                    posicion_correcta_final = false;
+                } else if (random_fx == subidas[k].getFinal_x() && random_fy == subidas[k].getFinal_y()) {
+                    posicion_correcta_final = false;
+                } else if (random_fx == subidas[k].getFinal_x() - 1 && random_fy == subidas[k].getFinal_y()) {
+                    posicion_correcta_final = false;
+                } else if (random_fx == subidas[k].getFinal_x() + 1 && random_fy == subidas[k].getFinal_y()) {
+                    posicion_correcta_final = false;
+                }
+            }
+        }
+    }
+
+    public void crearBajones(String dificultad) {
+        int i;
+        if (dificultad.equals("Facil")) {
+            for (i = 0; i < bajones.length; i++) {
+                bajones[i] = new Bajones();
+                do {
+                    posicion_correcta_inicio = true;
+                    random_ix = (int) (Math.random() * 7);
+                    random_iy = (int) (Math.random() * 4 + 1);
+                    analizarPosicionBajonesInicio(random_ix, random_iy, i);
+                } while (!posicion_correcta_inicio);
+                do {
+                    posicion_correcta_final = true;
+                    random_fx = (int) (Math.random() * 7);
+                    random_fy = (int) (Math.random() * 3);
+                    analizarPosicionBajonesFinal(random_fx, random_fy, i);
+                } while (!posicion_correcta_final);
+                bajones[i].setInicio_x(random_ix);
+                bajones[i].setInicio_y(random_iy);
+                bajones[i].setFinal_x(random_fx);
+                bajones[i].setFinal_y(random_fy);
+
+                tablero.agregarBajones(bajones[i].getInicio_x(), bajones[i].getInicio_y(), bajones[i].getFinal_x(), bajones[i].getFinal_y());
+            }
+        } else {
+            for (i = 0; i < bajones.length; i++) {
+                bajones[i] = new Bajones();
+                do {
+                    posicion_correcta_inicio = true;
                     random_ix = (int) (Math.random() * 19);
-                    random_iy = (int) (Math.random() * 8);
+                    random_iy = (int) (Math.random() * 9 + 1);
+                    analizarPosicionBajonesInicio(random_ix, random_iy, i);
+                } while (!posicion_correcta_inicio);
+                do {
+                    posicion_correcta_final = true;
                     random_fx = (int) (Math.random() * 19);
-                    random_fy = (int) (Math.random() * 9 + 1);
-                    analizarPosicionSubidaInicio(random_ix, random_iy, posicion_correcta, i);
-                    analizarPosicionSubidaFinal(random_fx, random_fy, posicion_correcta, i);
-                } while (!posicion_correcta);
-                subidas[i].setInicio_x(random_ix);
-                subidas[i].setInicio_y(random_iy);
-                subidas[i].setFinal_x(random_fx);
-                subidas[i].setFinal_y(random_fy);
+                    random_fy = (int) (Math.random() * 8);
+                    analizarPosicionBajonesFinal(random_fx, random_fy, i);
+                } while (!posicion_correcta_final);
+                bajones[i].setInicio_x(random_ix);
+                bajones[i].setInicio_y(random_iy);
+                bajones[i].setFinal_x(random_fx);
+                bajones[i].setFinal_y(random_fy);
+
+                tablero.agregarBajones(bajones[i].getInicio_x(), bajones[i].getInicio_y(), bajones[i].getFinal_x(), bajones[i].getFinal_y());
             }
         }
     }
