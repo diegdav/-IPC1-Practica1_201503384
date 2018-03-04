@@ -13,6 +13,7 @@ public class Jugador {
 
     private char simbolo;
     private int num_jugador;
+    private int dado;
 
     /**
      * @return the simbolo
@@ -43,11 +44,14 @@ public class Jugador {
     }
 
     public void lanzarDado(String dificultad) {
-        int random;
         if (dificultad.equals("Facil")) {
-            random = (int) (Math.random() * 6 + 1);
+            dado = (int) (Math.random() * 6 + 1);
         } else {
-            random = (int) (Math.random() * 12 + 1);
+            dado = (int) (Math.random() * 12 + 1);
         }
+    }
+    
+    public int getDado(){
+        return dado;
     }
 }
