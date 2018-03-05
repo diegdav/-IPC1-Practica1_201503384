@@ -5,6 +5,7 @@
  */
 package ipc1.practica1_201503384;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 /**
@@ -20,6 +21,7 @@ public class Menu {
     Subidas[] subidas;
     Bajones[] bajones;
 
+    private int opcion;
     private int cant_jugadores;
     private int cant_subidas;
     private int cant_bajones;
@@ -31,119 +33,136 @@ public class Menu {
     Tablero tablero = new Tablero();
 
     public Menu() {
+        opcion = 0;
         turno_jugador = 0;
     }
 
     public void mostrarMenuPrincipal() {
-        int opcion;
         do {
-            System.out.println("-------------------MENU PRINCIPAL-------------------");
-            System.out.println("1. Dificultad del juego");
-            System.out.println("2. Parametros iniciales");
-            System.out.println("3. Iniciar juego");
-            System.out.println("4. Salir");
-            System.out.print("Ingrese a una opcion: ");
-            opcion = teclado.nextInt();
+            try {
+                System.out.println("-------------------MENU PRINCIPAL-------------------");
+                System.out.println("1. Dificultad del juego");
+                System.out.println("2. Parametros iniciales");
+                System.out.println("3. Iniciar juego");
+                System.out.println("4. Salir");
+                System.out.print("Ingrese a una opcion: ");
 
-            switch (opcion) {
-                case 1:
-                    mostrarMenuDificultad();
-                    break;
-                case 2:
-                    if (dificultad.getDificultad() == null) {
-                        System.out.println("\nDebe de seleccionar primero la dificultad");
+                opcion = teclado.nextInt();
+
+                switch (opcion) {
+                    case 1:
+                        mostrarMenuDificultad();
+                        break;
+                    case 2:
+                        if (dificultad.getDificultad() == null) {
+                            System.out.println("\nDebe de seleccionar primero la dificultad");
+                            System.out.println("");
+                            mostrarMenuPrincipal();
+                        } else {
+                            mostrarMenuParametros();
+                        }
+                        break;
+                    case 3:
+                        if (dificultad.getDificultad() == null) {
+                            System.out.println("\nDebe de seleccionar primero la dificultad");
+                            System.out.println("");
+                            mostrarMenuPrincipal();
+                        } else if (cant_jugadores == 0) {
+                            System.out.println("\nDebe de seleccionar primero la cantidad de jugadores");
+                            System.out.println("");
+                            mostrarMenuPrincipal();
+                        } else if (cant_subidas == 0) {
+                            System.out.println("\nDebe de seleccionar primero la cantidad de subidas y bajones");
+                            System.out.println("");
+                            mostrarMenuPrincipal();
+                        } else {
+                            crearSubidas(dificultad.getDificultad());
+                            crearBajones(dificultad.getDificultad());
+                            tablero.crearTablero();
+                            iniciarJuego();
+                        }
+                        break;
+                    case 4:
+                        System.exit(0);
+                        break;
+                    default:
+                        System.out.println("\nOpcion incorrecta, vuelva a intentarlo");
                         System.out.println("");
-                        mostrarMenuPrincipal();
-                    } else {
-                        mostrarMenuParametros();
-                    }
-                    break;
-                case 3:
-                    if (dificultad.getDificultad() == null) {
-                        System.out.println("\nDebe de seleccionar primero la dificultad");
-                        System.out.println("");
-                        mostrarMenuPrincipal();
-                    } else if (cant_jugadores == 0) {
-                        System.out.println("\nDebe de seleccionar primero la cantidad de jugadores");
-                        System.out.println("");
-                        mostrarMenuPrincipal();
-                    } else if (cant_subidas == 0) {
-                        System.out.println("\nDebe de seleccionar primero la cantidad de subidas y bajones");
-                        System.out.println("");
-                        mostrarMenuPrincipal();
-                    } else {
-                        crearSubidas(dificultad.getDificultad());
-                        crearBajones(dificultad.getDificultad());
-                        tablero.crearTablero();
-                        iniciarJuego();
-                    }
-                    break;
-                case 4:
-                    System.exit(0);
-                    break;
-                default:
-                    System.out.println("\nOpcion incorrecta, vuelva a intentarlo");
-                    System.out.println("");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("\nOpcion incorrecta, vuelva a intentarlo");
+                teclado.nextLine();
+                mostrarMenuPrincipal();
             }
         } while (opcion < 1 || opcion > 4);
     }
 
     public void mostrarMenuDificultad() {
-        int opcion;
         do {
-            System.out.println("\n----------------------Dificultad----------------------");
-            System.out.println("1. Facil");
-            System.out.println("2. Dificil");
-            System.out.println("3. Regresar");
-            System.out.print("Ingrese a una opcion: ");
-            opcion = teclado.nextInt();
+            try {
+                System.out.println("\n----------------------Dificultad----------------------");
+                System.out.println("1. Facil");
+                System.out.println("2. Dificil");
+                System.out.println("3. Regresar");
+                System.out.print("Ingrese a una opcion: ");
+                opcion = teclado.nextInt();
 
-            switch (opcion) {
-                case 1:
-                    dificultad.setDificultad("Facil");
-                    mostrarRestricciones(dificultad.getDificultad());
-                    break;
-                case 2:
-                    dificultad.setDificultad("Dificil");
-                    mostrarRestricciones(dificultad.getDificultad());
-                    break;
-                case 3:
-                    System.out.println("");
-                    mostrarMenuPrincipal();
-                    break;
-                default:
-                    System.out.println("\nOpcion incorrecta, vuelva a intentarlo");
+                switch (opcion) {
+                    case 1:
+                        dificultad.setDificultad("Facil");
+                        mostrarRestricciones(dificultad.getDificultad());
+                        break;
+                    case 2:
+                        dificultad.setDificultad("Dificil");
+                        mostrarRestricciones(dificultad.getDificultad());
+                        break;
+                    case 3:
+                        System.out.println("");
+                        mostrarMenuPrincipal();
+                        break;
+                    default:
+                        System.out.println("\nOpcion incorrecta, vuelva a intentarlo");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("\nOpcion incorrecta, vuelva a intentarlo");
+                teclado.nextLine();
+                mostrarMenuDificultad();
             }
         } while (opcion < 1 || opcion > 3);
     }
 
     public void mostrarMenuParametros() {
-        int opcion;
         do {
-            System.out.println("\n-----------------Parametros Iniciales-----------------");
-            System.out.println("1. Jugadores");
-            System.out.println("2. Subidas y Bajones");
-            System.out.println("3. Regresar");
-            System.out.print("Ingrese a una opcion: ");
-            opcion = teclado.nextInt();
+            try {
+                System.out.println("\n-----------------Parametros Iniciales-----------------");
+                System.out.println("1. Jugadores");
+                System.out.println("2. Subidas y Bajones");
+                System.out.println("3. Regresar");
+                System.out.print("Ingrese a una opcion: ");
+                opcion = teclado.nextInt();
 
-            switch (opcion) {
-                case 1:
-                    ingresarCantidadJugadores(dificultad.getDificultad());
-                    generarTurno(jugador.length);
-                    break;
-                case 2:
-                    System.out.println("");
-                    pedirSubidas(dificultad.getDificultad());
-                    pedirBajones(dificultad.getDificultad());
-                    mostrarMenuPrincipal();
-                    break;
-                case 3:
-                    System.out.println("");
-                    mostrarMenuPrincipal();
-                    break;
-                default:
-                    System.out.println("\nOpcion incorrecta, vuelva a intentarlo");
+                switch (opcion) {
+                    case 1:
+                        ingresarCantidadJugadores(dificultad.getDificultad());
+                        generarTurno(jugador.length);
+                        break;
+                    case 2:
+                        System.out.println("");
+                        pedirSubidas(dificultad.getDificultad());
+                        pedirBajones(dificultad.getDificultad());
+                        mostrarMenuPrincipal();
+                        break;
+                    case 3:
+                        System.out.println("");
+                        mostrarMenuPrincipal();
+                        break;
+                    default:
+                        System.out.println("\nOpcion incorrecta, vuelva a intentarlo");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("\nOpcion incorrecta, vuelva a intentarlo");
+                teclado.nextLine();
+                mostrarMenuParametros();
             }
         } while (opcion < 1 || opcion > 3);
     }
@@ -151,13 +170,25 @@ public class Menu {
     public void ingresarCantidadJugadores(String dificultad) {
         if (dificultad.equals("Facil")) {
             do {
-                System.out.print("\nIngrese la cantidad de jugadores (2-3):");
-                cant_jugadores = teclado.nextInt();
+                try {
+                    System.out.print("\nIngrese la cantidad de jugadores (2-3):");
+                    cant_jugadores = teclado.nextInt();
+                } catch (InputMismatchException e) {
+                    System.out.println("\nOpcion incorrecta, vuelva a intentarlo");
+                    teclado.nextLine();
+                    ingresarCantidadJugadores(dificultad);
+                }
             } while (cant_jugadores < 2 || cant_jugadores > 3);
         } else {
             do {
-                System.out.print("\nIngrese la cantidad de jugadores (2-4):");
-                cant_jugadores = teclado.nextInt();
+                try {
+                    System.out.print("\nIngrese la cantidad de jugadores (2-4):");
+                    cant_jugadores = teclado.nextInt();
+                } catch (InputMismatchException e) {
+                    System.out.println("\nOpcion incorrecta, vuelva a intentarlo");
+                    teclado.nextLine();
+                    ingresarCantidadJugadores(dificultad);
+                }
             } while (cant_jugadores < 2 || cant_jugadores > 4);
         }
         jugador = new Jugador[cant_jugadores];
@@ -239,13 +270,23 @@ public class Menu {
     public void pedirSubidas(String dificultad) {
         if (dificultad.equals("Facil")) {
             do {
-                System.out.print("Ingrese la cantidad de subidas (5-10): ");
-                cant_subidas = teclado.nextInt();
+                try {
+                    System.out.print("Ingrese la cantidad de subidas (5-10): ");
+                    cant_subidas = teclado.nextInt();
+                } catch (InputMismatchException e) {
+                    System.out.println("\nOpcion incorrecta, vuelva a intentarlo");
+                    teclado.nextLine();
+                }
             } while (cant_subidas < 5 || cant_subidas > 10);
         } else {
             do {
-                System.out.print("Ingrese la cantidad de subidas (20-40): ");
-                cant_subidas = teclado.nextInt();
+                try {
+                    System.out.print("Ingrese la cantidad de subidas (20-40): ");
+                    cant_subidas = teclado.nextInt();
+                } catch (InputMismatchException e) {
+                    System.out.println("\nOpcion incorrecta, vuelva a intentarlo");
+                    teclado.nextLine();
+                }
             } while (cant_subidas < 20 || cant_subidas > 40);
         }
         subidas = new Subidas[cant_subidas];
@@ -255,13 +296,23 @@ public class Menu {
     public void pedirBajones(String dificultad) {
         if (dificultad.equals("Facil")) {
             do {
-                System.out.print("Ingrese la cantidad de bajones (5-10): ");
-                cant_bajones = teclado.nextInt();
+                try {
+                    System.out.print("Ingrese la cantidad de bajones (5-10): ");
+                    cant_bajones = teclado.nextInt();
+                } catch (InputMismatchException e) {
+                    System.out.println("\nOpcion incorrecta, vuelva a intentarlo");
+                    teclado.nextLine();
+                }
             } while (cant_bajones < 5 || cant_bajones > 10);
         } else {
             do {
-                System.out.print("Ingrese la cantidad de bajones (20-40): ");
-                cant_bajones = teclado.nextInt();
+                try {
+                    System.out.print("Ingrese la cantidad de bajones (20-40): ");
+                    cant_bajones = teclado.nextInt();
+                } catch (InputMismatchException e) {
+                    System.out.println("\nOpcion incorrecta, vuelva a intentarlo");
+                    teclado.nextLine();
+                }
             } while (cant_bajones < 20 || cant_bajones > 40);
         }
         bajones = new Bajones[cant_bajones + 1];
