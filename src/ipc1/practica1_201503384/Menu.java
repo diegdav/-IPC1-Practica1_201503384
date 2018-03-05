@@ -59,10 +59,24 @@ public class Menu {
                     }
                     break;
                 case 3:
-                    crearSubidas(dificultad.getDificultad());
-                    crearBajones(dificultad.getDificultad());
-                    iniciarJuego();
-                    mostrarMenuPrincipal();
+                    if (dificultad.getDificultad() == null) {
+                        System.out.println("\nDebe de seleccionar primero la dificultad");
+                        System.out.println("");
+                        mostrarMenuPrincipal();
+                    } else if (cant_jugadores == 0) {
+                        System.out.println("\nDebe de seleccionar primero la cantidad de jugadores");
+                        System.out.println("");
+                        mostrarMenuPrincipal();
+                    } else if (cant_subidas == 0) {
+                        System.out.println("\nDebe de seleccionar primero la cantidad de subidas y bajones");
+                        System.out.println("");
+                        mostrarMenuPrincipal();
+                    } else {
+                        crearSubidas(dificultad.getDificultad());
+                        crearBajones(dificultad.getDificultad());
+                        tablero.crearTablero();
+                        iniciarJuego();
+                    }
                     break;
                 case 4:
                     System.exit(0);
@@ -179,23 +193,27 @@ public class Menu {
             } while (!simbolo_valido);
             jugador[i].setSimbolo(simbolo);
         }
+
+        for (i = 0; i < cant_jugadores; i++) {
+            System.out.print("\nJugador " + (i + 1) + ": " + jugador[i].getSimbolo());
+        }
+        System.out.println("");
         mostrarMenuParametros();
     }
 
     public void generarTurno(int cant_jugadores) {
-        int i, j, random;
+        int i, random;
         boolean turno;
         for (i = 0; i < cant_jugadores; i++) {
             do {
                 turno = true;
                 random = (int) (Math.random() * cant_jugadores) + 1;
-                for (j = 0; j < i; j++) {
-                    if (random == jugador[j].getNum_jugador()) {
-                        turno = false;
-                    }
+
+                if (random == jugador[random - 1].getNum_jugador()) {
+                    turno = false;
                 }
             } while (!turno);
-            jugador[i].setNum_jugador(random);
+            jugador[random - 1].setNum_jugador(random);
         }
     }
 
@@ -246,7 +264,7 @@ public class Menu {
                 cant_bajones = teclado.nextInt();
             } while (cant_bajones < 20 || cant_bajones > 40);
         }
-        bajones = new Bajones[cant_bajones];
+        bajones = new Bajones[cant_bajones + 1];
         System.out.println("");
     }
 
@@ -274,6 +292,25 @@ public class Menu {
         }
     }
 
+    public void analizarPosicionSubidaFinal(int random_final, int i) {
+        int j;
+        for (j = 0; j < i; j++) {
+            if (random_final == subidas[j].getFinaliza()) {
+                posicion_correcta_final = false;
+            } else if (random_final == subidas[j].getFinaliza() - 1) {
+                posicion_correcta_final = false;
+            } else if (random_final == subidas[j].getFinaliza() + 1) {
+                posicion_correcta_final = false;
+            } else if (random_final == subidas[j].getInicio()) {
+                posicion_correcta_final = false;
+            } else if (random_final == subidas[j].getInicio() - 1) {
+                posicion_correcta_final = false;
+            } else if (random_final == subidas[j].getInicio() + 1) {
+                posicion_correcta_final = false;
+            }
+        }
+    }
+
     public void crearSubidas(String dificultad) {
         if (dificultad.equals("Facil")) {
             int i;
@@ -286,7 +323,8 @@ public class Menu {
                 } while (!posicion_correcta_inicio);
                 do {
                     posicion_correcta_final = true;
-                    this.random_final = (int) (Math.random() * 6) + 1;
+                    this.random_final = (int) (Math.random() * 38) + this.random_inicio;
+                    analizarPosicionSubidaFinal(this.random_final, i);
                 } while (!posicion_correcta_final);
                 subidas[i].setInicio(this.random_inicio);
                 subidas[i].setFinaliza(this.random_final);
@@ -304,7 +342,8 @@ public class Menu {
                 } while (!posicion_correcta_inicio);
                 do {
                     posicion_correcta_final = true;
-                    this.random_final = (int) (Math.random() * 12) + 1;
+                    this.random_final = (int) (Math.random() * 198) + this.random_inicio;
+                    analizarPosicionSubidaFinal(this.random_final, i);
                 } while (!posicion_correcta_final);
                 subidas[i].setInicio(this.random_inicio);
                 subidas[i].setFinaliza(this.random_final);
@@ -345,6 +384,12 @@ public class Menu {
                     posicion_correcta_final = false;
                 } else if (random_final == bajones[j].getFinaliza() + 1) {
                     posicion_correcta_final = false;
+                } else if (random_final == bajones[j].getInicio()) {
+                    posicion_correcta_final = false;
+                } else if (random_final == bajones[j].getInicio() - 1) {
+                    posicion_correcta_final = false;
+                } else if (random_final == bajones[j].getInicio() + 1) {
+                    posicion_correcta_final = false;
                 } else if (random_final == subidas[k].getFinaliza()) {
                     posicion_correcta_final = false;
                 } else if (random_final == subidas[k].getFinaliza() - 1) {
@@ -368,7 +413,8 @@ public class Menu {
                 } while (!posicion_correcta_inicio);
                 do {
                     posicion_correcta_final = true;
-                    random_final = (int) (Math.random() * 6) + 1;
+                    random_final = (int) (Math.random() * random_inicio - 1) + 1;
+                    analizarPosicionBajonesFinal(random_final, i);
                 } while (!posicion_correcta_final);
                 bajones[i].setInicio(random_inicio);
                 bajones[i].setFinaliza(random_final);
@@ -385,7 +431,8 @@ public class Menu {
                 } while (!posicion_correcta_inicio);
                 do {
                     posicion_correcta_final = true;
-                    random_final = (int) (Math.random() * 12) + 1;
+                    random_final = (int) (Math.random() * 190) + 1;
+                    analizarPosicionBajonesFinal(random_final, i);
                 } while (!posicion_correcta_final);
                 bajones[i].setInicio(random_inicio);
                 bajones[i].setFinaliza(random_final);
@@ -396,20 +443,20 @@ public class Menu {
     }
 
     public void iniciarJuego() {
-        cambiarJugador();
-    }
+        do {
+            System.out.print("\nTurno del jugador " + (turno_jugador + 1) + ": ");
+            System.out.print("Lanzar dado");
+            teclado.nextLine();
+            jugador[turno_jugador].lanzarDado(dificultad.getDificultad());
+            System.out.println("Se mueve " + jugador[turno_jugador].getDado() + " posiciones");
+            System.out.println("");
+            tablero.agregarJugador(String.valueOf(jugador[turno_jugador].getSimbolo()), jugador[turno_jugador].getDado(), turno_jugador);
+            tablero.crearTablero();
+            turno_jugador++;
+            if (turno_jugador == jugador.length) {
+                turno_jugador = 0;
+            }
+        } while (1 == 1);
 
-    public void cambiarJugador() {
-        tablero.agregarJugador(String.valueOf(jugador[turno_jugador].getSimbolo()), jugador[turno_jugador].getDado(), turno_jugador);
-        tablero.crearTablero();
-        teclado.nextLine();
-        System.out.print("\nTurno del jugador " + (turno_jugador + 1) + ": ");
-        jugador[turno_jugador].lanzarDado(dificultad.getDificultad());
-        System.out.println("Se mueve " + jugador[turno_jugador].getDado() + " posiciones");
-        turno_jugador++;
-        if (turno_jugador == jugador.length) {
-            turno_jugador = 0;
-        }
-        iniciarJuego();
     }
 }
