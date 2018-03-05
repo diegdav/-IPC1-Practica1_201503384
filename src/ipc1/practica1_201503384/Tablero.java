@@ -107,8 +107,8 @@ public class Tablero {
         int i, fila, columna;
         for (i = 0; i < contador_subida; i++) {
             if (posicion == posicion_subida[i]) {
-                System.out.println("\nHa caido en una subida. Sube " + posicion_subidaf[i] + " casillas.");
-                posicion_actual[numero_jugador] = posicion_subidaf[i] + posicion_actual[numero_jugador];
+                System.out.println("\nHa caido en una subida. Sube " + (posicion_subidaf[i] - posicion_actual[numero_jugador]) + " casillas.");
+                posicion_actual[numero_jugador] = posicion_subidaf[i];
             }
         }
         for (fila = 0; fila < this.filas; fila++) {
@@ -138,8 +138,9 @@ public class Tablero {
         int i, fila, columna;
         for (i = 0; i < contador_bajones; i++) {
             if (posicion == posicion_bajones[i]) {
-                System.out.println("\nHa caido en un bajon. Baja " + posicion_bajonesf[i] + " casillas.");
-                posicion_actual[numero_jugador] = posicion_actual[numero_jugador] - posicion_bajonesf[i];
+                System.out.println("Ha caido en un bajon. Baja " + (posicion_actual[numero_jugador] - posicion_bajonesf[i]) + " casillas.");
+                System.out.println("");
+                posicion_actual[numero_jugador] = posicion_bajonesf[i];
             }
         }
         for (fila = 0; fila < this.filas; fila++) {
@@ -155,6 +156,9 @@ public class Tablero {
         int fila, columna;
         for (fila = 0; fila < this.filas; fila++) {
             for (columna = 0; columna < this.columnas; columna++) {
+                if (fila == 0 && columna == this.columnas - 1) {
+                    mostrar_tablero[fila][columna] = "$";
+                }
                 if (fila % 2 == 0) {
                     System.out.print("|_");
                     System.out.print(mostrar_tablero[fila][columna]);
@@ -172,9 +176,7 @@ public class Tablero {
 
     public void agregarJugador(String simbolo, int posiciones, int numero_jugador) {
         int fila, columna, i;
-        if (this.simbolo[numero_jugador] == null) {
-            this.simbolo[numero_jugador] = simbolo;
-        }
+        this.simbolo[numero_jugador] = simbolo;
 
         posicion_anterior[numero_jugador] = posicion_actual[numero_jugador];
         posicion_actual[numero_jugador] = posiciones + posicion_actual[numero_jugador];
@@ -185,7 +187,7 @@ public class Tablero {
                         analizarSubidas(posicion_actual[numero_jugador], numero_jugador);
                         analizarBajones(posicion_actual[numero_jugador], numero_jugador);
                     }
-                    if (posiciones_tablero[fila][columna] == posicion_anterior[numero_jugador] && posicion_anterior[numero_jugador] != posicion_actual[numero_jugador]){
+                    if (posiciones_tablero[fila][columna] == posicion_anterior[numero_jugador] && posicion_anterior[numero_jugador] != posicion_actual[numero_jugador]) {
                         mostrar_tablero[fila][columna] = " ";
                     }
                     for (i = 0; i < posicion_subida.length; i++) {
@@ -199,5 +201,21 @@ public class Tablero {
                 }
             }
         }
+        if (posicion_actual[numero_jugador] >= (this.filas * this.columnas)) {
+            finalizar(this.simbolo[numero_jugador]);
+        }
+    }
+
+    public void finalizar(String ganador) {
+        int fila, columna;
+
+        System.out.println("\nEl jugador ganador es: " + ganador);
+        for (fila = 0; fila < this.filas; fila++) {
+            for (columna = 0; columna < this.columnas; columnas++) {
+                mostrar_tablero[fila][columna] = " ";
+            }
+        }
+        System.out.println("");
+        new Menu().mostrarMenuPrincipal();
     }
 }
